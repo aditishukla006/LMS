@@ -6,6 +6,8 @@ import '../question_bank.dart';
 import 'summary_screen.dart';
 
 class QuestionnaireScreen extends StatefulWidget {
+  const QuestionnaireScreen({super.key});
+
   @override
   _QuestionnaireScreenState createState() => _QuestionnaireScreenState();
 }

@@ -10,6 +10,8 @@ import 'feedback_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class DashboardScreen extends StatelessWidget {
+  const DashboardScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<StudentProvider>(context);
@@ -94,6 +96,15 @@ class DashboardScreen extends StatelessWidget {
 
             // Weekly assignments bar chart
             _buildWeeklyAssignmentsChart(provider),
+
+            SizedBox(height: 30),
+
+            // --- NEW SECTION: Submission Status Pie Chart ---
+            //_buildSubmissionStatusChart(provider.submissionStatus),
+            SizedBox(height: 30),
+
+            // --- NEW SECTION: Upcoming Assignments grouped by Subject ---
+            _buildUpcomingAssignments(provider.upcomingAssignments),
 
             SizedBox(height: 30),
 
@@ -227,6 +238,51 @@ class DashboardScreen extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // NEW: Upcoming Assignments grouped by Subject
+  Widget _buildUpcomingAssignments(List<Assignment> assignments) {
+    if (assignments.isEmpty) {
+      return SizedBox();
+    }
+
+    // Group by subject
+    Map<String, List<Assignment>> grouped = {};
+    for (var assignment in assignments) {
+      grouped.putIfAbsent(assignment.subject, () => []);
+      grouped[assignment.subject]!.add(assignment);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Upcoming Assignments",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 10),
+        ...grouped.entries.map(
+          (entry) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                entry.key,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              ...entry.value.map(
+                (assignment) => Card(
+                  child: ListTile(
+                    title: Text(assignment.title),
+                    subtitle: Text("Due: ${assignment.dueDate}"),
+                  ),
+                ),
+              ),
+              SizedBox(height: 12),
+            ],
           ),
         ),
       ],

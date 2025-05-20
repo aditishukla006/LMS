@@ -8,6 +8,8 @@ import 'package:fl_chart/fl_chart.dart';
 import '../providers/student_provider.dart';
 
 class ProgressScreen extends StatelessWidget {
+  const ProgressScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<StudentProvider>(context);
@@ -38,7 +40,7 @@ class ProgressScreen extends StatelessWidget {
                   SizedBox(height: 16),
                 ],
               );
-            }).toList(),
+            }),
           ],
         ),
       ),

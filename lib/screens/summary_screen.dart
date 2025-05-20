@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../providers/student_provider.dart';
 
 class SummaryScreen extends StatelessWidget {
+  const SummaryScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<StudentProvider>(context);

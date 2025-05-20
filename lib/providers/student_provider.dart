@@ -2,6 +2,20 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+class Assignment {
+  final String subject;
+  final String title;
+  final String dueDate; // You can change this to DateTime if you want
+  final String status; // "On Time", "Approaching", "Late"
+
+  Assignment({
+    required this.subject,
+    required this.title,
+    required this.dueDate,
+    required this.status,
+  });
+}
+
 class StudentProvider extends ChangeNotifier {
   String name = "John Doe";
   String studentClass = "10th Grade";
@@ -18,7 +32,7 @@ class StudentProvider extends ChangeNotifier {
     "Mon": 2,
     "Tue": 1,
     "Wed": 3,
-    "Thu": 0,
+    "Thu": 5,
     "Fri": 1,
     "Sat": 0,
     "Sun": 2,
@@ -26,6 +40,29 @@ class StudentProvider extends ChangeNotifier {
 
   // Questionnaire responses saved locally
   Map<int, int> questionnaireResponses = {};
+
+  // Upcoming assignments list
+  List<Assignment> upcomingAssignments = [
+    Assignment(
+      subject: "Math",
+      title: "Algebra Worksheet",
+      dueDate: "May 21, 2025",
+      status: "On Time",
+    ),
+    Assignment(
+      subject: "Math",
+      title: "Geometry Problems",
+      dueDate: "May 23, 2025",
+      status: "On Time",
+    ),
+  ];
+
+  // Submission status counts
+  Map<String, double> submissionStatus = {
+    "On Time": 3,
+    "Approaching": 1,
+    "Late": 2,
+  };
 
   // Load saved responses
   Future<void> loadResponses() async {
