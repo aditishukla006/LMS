@@ -1,0 +1,267 @@
+// screens/dashboard_screen.dart
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/student_provider.dart';
+import 'questionnaire_screen.dart';
+import 'progress_screen.dart';
+import 'quiz_screen.dart'; // you can create stubs for these screens
+import 'feedback_screen.dart';
+
+import 'package:fl_chart/fl_chart.dart';
+
+class DashboardScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final provider = Provider.of<StudentProvider>(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Welcome, ${provider.name}"),
+        actions: [
+          CircleAvatar(backgroundImage: NetworkImage(provider.profilePicUrl)),
+          SizedBox(width: 12),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // Profile Info Card
+            Card(
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: NetworkImage(provider.profilePicUrl),
+                  radius: 30,
+                ),
+                title: Text(provider.name, style: TextStyle(fontSize: 20)),
+                subtitle: Text(provider.studentClass),
+              ),
+            ),
+
+            SizedBox(height: 20),
+
+            // Key Features cards
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                _buildFeatureCard(context, "Start Learning", Icons.school, () {
+                  // TODO: Navigate to Learning screen
+                }),
+                _buildFeatureCard(context, "Continue Quiz", Icons.quiz, () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => QuizScreen()),
+                  );
+                }),
+                _buildFeatureCard(
+                  context,
+                  "Submit Feedback",
+                  Icons.feedback,
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => FeedbackScreen()),
+                    );
+                  },
+                ),
+                _buildFeatureCard(context, "My Progress", Icons.bar_chart, () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => ProgressScreen()),
+                  );
+                }),
+                _buildFeatureCard(
+                  context,
+                  "Personality Questionnaire",
+                  Icons.assignment,
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => QuestionnaireScreen()),
+                    );
+                  },
+                ),
+              ],
+            ),
+
+            SizedBox(height: 30),
+
+            // Progress Chart - Assignments progress (Pie Chart)
+            _buildAssignmentProgressChart(provider),
+
+            SizedBox(height: 30),
+
+            // Weekly assignments bar chart
+            _buildWeeklyAssignmentsChart(provider),
+
+            SizedBox(height: 30),
+
+            // 45-minute daily study plan card
+            _buildStudyPlanCard(provider),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFeatureCard(
+    BuildContext context,
+    String title,
+    IconData icon,
+    VoidCallback onTap,
+  ) {
+    return SizedBox(
+      width: (MediaQuery.of(context).size.width / 2) - 24,
+      child: Card(
+        color: Colors.blue.shade100,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: Column(
+              children: [
+                Icon(icon, size: 50, color: Colors.blue.shade700),
+                SizedBox(height: 12),
+                Text(
+                  title,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAssignmentProgressChart(StudentProvider provider) {
+    List<PieChartSectionData> sections = [];
+    provider.assignmentProgress.forEach((subject, progress) {
+      sections.add(
+        PieChartSectionData(
+          value: progress,
+          title: "${(progress * 100).toInt()}%",
+          color: Colors.primaries[sections.length % Colors.primaries.length],
+          radius: 50,
+          titleStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            color: Colors.white,
+          ),
+        ),
+      );
+    });
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Assignments Progress",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(
+          height: 180,
+          child: PieChart(
+            PieChartData(
+              sections: sections,
+              centerSpaceRadius: 40,
+              sectionsSpace: 4,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWeeklyAssignmentsChart(StudentProvider provider) {
+    List<BarChartGroupData> barGroups = [];
+
+    final days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+    for (int i = 0; i < days.length; i++) {
+      int count = provider.weeklyAssignments[days[i]] ?? 0;
+      barGroups.add(
+        BarChartGroupData(
+          x: i,
+          barRods: [
+            BarChartRodData(
+              toY: count.toDouble(),
+              color:
+                  count == 0
+                      ? Colors.green
+                      : (count <= 2 ? Colors.orange : Colors.red),
+              width: 20,
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Upcoming Assignments This Week",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(
+          height: 220,
+          child: BarChart(
+            BarChartData(
+              alignment: BarChartAlignment.spaceAround,
+              maxY: 5,
+              barGroups: barGroups,
+              titlesData: FlTitlesData(
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (value, meta) {
+                      String day = days[value.toInt()];
+                      return Text(day);
+                    },
+                  ),
+                ),
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStudyPlanCard(StudentProvider provider) {
+    // For demo, generate a simple daily study plan of 45 minutes split into 3 sessions
+    List<String> sessions = [
+      "15 min: Review last class notes",
+      "15 min: Practice exercises",
+      "15 min: Quiz or flashcards",
+    ];
+
+    return Card(
+      color: Colors.teal.shade100,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Daily 45-minute Study Plan",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 12),
+            ...sessions.map(
+              (s) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Text(s, style: TextStyle(fontSize: 16)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

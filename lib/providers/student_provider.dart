@@ -1,0 +1,62 @@
+// providers/student_provider.dart
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class StudentProvider extends ChangeNotifier {
+  String name = "John Doe";
+  String studentClass = "10th Grade";
+  String profilePicUrl = "https://i.pravatar.cc/150?img=3";
+
+  // Progress data (dummy)
+  Map<String, double> assignmentProgress = {
+    "Math": 0.75,
+    "Science": 0.5,
+    "English": 0.9,
+  };
+
+  Map<String, int> weeklyAssignments = {
+    "Mon": 2,
+    "Tue": 1,
+    "Wed": 3,
+    "Thu": 0,
+    "Fri": 1,
+    "Sat": 0,
+    "Sun": 2,
+  };
+
+  // Questionnaire responses saved locally
+  Map<int, int> questionnaireResponses = {};
+
+  // Load saved responses
+  Future<void> loadResponses() async {
+    final prefs = await SharedPreferences.getInstance();
+    final keys = prefs.getKeys();
+    questionnaireResponses.clear();
+    for (var key in keys) {
+      if (key.startsWith('question_')) {
+        int qIndex = int.parse(key.split('_')[1]);
+        int answer = prefs.getInt(key) ?? -1;
+        if (answer != -1) questionnaireResponses[qIndex] = answer;
+      }
+    }
+    notifyListeners();
+  }
+
+  // Save a response
+  Future<void> saveResponse(int questionIndex, int answerIndex) async {
+    questionnaireResponses[questionIndex] = answerIndex;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('question_$questionIndex', answerIndex);
+    notifyListeners();
+  }
+
+  // Clear all saved questionnaire responses
+  Future<void> clearResponses() async {
+    final prefs = await SharedPreferences.getInstance();
+    for (int i = 0; i < 35; i++) {
+      await prefs.remove('question_$i');
+    }
+    questionnaireResponses.clear();
+    notifyListeners();
+  }
+}
