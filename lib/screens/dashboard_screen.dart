@@ -1,10 +1,10 @@
-// screens/dashboard_screen.dart
 import 'package:flutter/material.dart';
+import 'package:lms_project/screens/login_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/student_provider.dart';
 import 'questionnaire_screen.dart';
 import 'progress_screen.dart';
-import 'quiz_screen.dart'; // you can create stubs for these screens
+import 'quiz_screen.dart';
 import 'feedback_screen.dart';
 
 import 'package:fl_chart/fl_chart.dart';
@@ -20,10 +20,19 @@ class DashboardScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Welcome, ${provider.name}"),
         actions: [
-          CircleAvatar(backgroundImage: NetworkImage(provider.profilePicUrl)),
+          Builder(
+            builder:
+                (context) => GestureDetector(
+                  onTap: () => Scaffold.of(context).openEndDrawer(),
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(provider.profilePicUrl),
+                  ),
+                ),
+          ),
           SizedBox(width: 12),
         ],
       ),
+      endDrawer: _buildProfileDrawer(context),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -182,6 +191,50 @@ class DashboardScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildProfileDrawer(BuildContext context) {
+    final provider = Provider.of<StudentProvider>(context, listen: false);
+
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          UserAccountsDrawerHeader(
+            accountName: Text(provider.name),
+            accountEmail: Text(provider.studentClass),
+            currentAccountPicture: CircleAvatar(
+              backgroundImage: NetworkImage(provider.profilePicUrl),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.edit),
+            title: Text('Edit Profile'),
+            onTap: () {
+              // TODO: Navigate to Edit Profile Screen
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('Logout'),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
+              );
+            },
+          ),
+          SwitchListTile(
+            title: Text("Dark Mode"),
+            secondary: Icon(Icons.brightness_6),
+            value: provider.isDarkMode,
+            onChanged: (val) {
+              provider.toggleTheme(val); // Implement in provider
+            },
+          ),
+        ],
+      ),
     );
   }
 

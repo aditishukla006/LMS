@@ -64,6 +64,21 @@ class StudentProvider extends ChangeNotifier {
     "Late": 2,
   };
 
+  bool isDarkMode = false;
+
+  void toggleTheme(bool value) async {
+    isDarkMode = value;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('darkMode', isDarkMode);
+  }
+
+  void loadTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    isDarkMode = prefs.getBool('darkMode') ?? false;
+    notifyListeners();
+  }
+
   // Load saved responses
   Future<void> loadResponses() async {
     final prefs = await SharedPreferences.getInstance();

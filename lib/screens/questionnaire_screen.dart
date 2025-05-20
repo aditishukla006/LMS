@@ -46,15 +46,15 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
             SizedBox(height: 20),
 
             ...List.generate(question.options.length, (index) {
-              return RadioListTile<int>(
+              return CheckboxListTile(
                 title: Text(question.options[index]),
-                value: index,
-                groupValue: selectedOption,
+                value: selectedOption == index,
                 onChanged: (val) async {
-                  if (val != null) {
-                    await provider.saveResponse(currentQuestion, val);
+                  if (val == true) {
+                    await provider.saveResponse(currentQuestion, index);
                   }
                 },
+                controlAffinity: ListTileControlAffinity.leading,
               );
             }),
 
@@ -70,6 +70,15 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
                         currentQuestion--;
                       });
                     },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 16,
+                      ),
+                      textStyle: TextStyle(fontSize: 16),
+                    ),
                     child: Text("Previous"),
                   ),
                 ElevatedButton(
@@ -90,6 +99,12 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
                               );
                             }
                           },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    textStyle: TextStyle(fontSize: 16),
+                  ),
                   child: Text(
                     currentQuestion == questions.length - 1 ? "Submit" : "Next",
                   ),
