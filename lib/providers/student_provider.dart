@@ -1,6 +1,6 @@
 // providers/student_provider.dart
 import 'package:flutter/material.dart';
-import 'package:lms_project/question_bank.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Assignment {
@@ -18,7 +18,7 @@ class Assignment {
 }
 
 class StudentProvider extends ChangeNotifier {
-  String name = "John Doe";
+  String name = "Aditi Shukla";
   String studentClass = "10th Grade";
   String profilePicUrl = "https://i.pravatar.cc/150?img=3";
 
@@ -93,15 +93,6 @@ class StudentProvider extends ChangeNotifier {
       }
     }
     notifyListeners();
-  }
-
-  List<int> _shuffledQuestionOrder = [];
-
-  List<int> get shuffledQuestionOrder => _shuffledQuestionOrder;
-
-  void initializeShuffledQuestions() {
-    _shuffledQuestionOrder = List.generate(questions.length, (index) => index);
-    _shuffledQuestionOrder.shuffle();
   }
 
   // Save a response

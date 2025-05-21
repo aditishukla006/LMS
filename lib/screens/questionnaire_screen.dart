@@ -19,7 +19,7 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
   void initState() {
     super.initState();
     final provider = Provider.of<StudentProvider>(context, listen: false);
-    provider.initializeShuffledQuestions();
+
     provider.loadResponses();
   }
 
@@ -86,7 +86,6 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
 
             Spacer(),
 
-            /// NAVIGATION BUTTONS
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
