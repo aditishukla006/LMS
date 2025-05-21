@@ -118,7 +118,7 @@ class DashboardScreen extends StatelessWidget {
             SizedBox(height: 30),
 
             // 45-minute daily study plan card
-            _buildStudyPlanCard(provider),
+            _buildStudyPlanCard(context, provider),
           ],
         ),
       ),
@@ -357,8 +357,11 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStudyPlanCard(StudentProvider provider) {
-    // For demo, generate a simple daily study plan of 45 minutes split into 3 sessions
+  Widget _buildStudyPlanCard(BuildContext context, StudentProvider provider) {
+    final theme = Theme.of(context);
+    // Add `BuildContext` if needed
+    final isDark = theme.brightness == Brightness.dark;
+
     List<String> sessions = [
       "15 min: Review last class notes",
       "15 min: Practice exercises",
@@ -366,7 +369,7 @@ class DashboardScreen extends StatelessWidget {
     ];
 
     return Card(
-      color: Colors.teal.shade100,
+      color: isDark ? Colors.teal.shade900 : Colors.teal.shade100,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -374,13 +377,23 @@ class DashboardScreen extends StatelessWidget {
           children: [
             Text(
               "Daily 45-minute Study Plan",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: theme.textTheme.bodyLarge?.color,
+              ),
             ),
             SizedBox(height: 12),
             ...sessions.map(
               (s) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Text(s, style: TextStyle(fontSize: 16)),
+                child: Text(
+                  s,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: theme.textTheme.bodyMedium?.color,
+                  ),
+                ),
               ),
             ),
           ],
