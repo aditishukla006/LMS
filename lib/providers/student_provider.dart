@@ -80,22 +80,22 @@ class StudentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _responsesLoaded = false;
+
   // Load saved responses
   Future<void> loadResponses() async {
+    if (_responsesLoaded) return;
+
     final prefs = await SharedPreferences.getInstance();
-    final keys = prefs.getKeys();
-    questionnaireResponses.clear();
-    for (var key in keys) {
-      if (key.startsWith('question_')) {
-        int qIndex = int.parse(key.split('_')[1]);
-        int answer = prefs.getInt(key) ?? -1;
-        if (answer != -1) questionnaireResponses[qIndex] = answer;
-      }
+    for (int i = 0; i < 8; i++) {
+      questionnaireResponses[i] = prefs.getInt('q_$i')!;
     }
+    _responsesLoaded = true;
     notifyListeners();
   }
 
   // Save a response
+
   Future<void> saveResponse(int questionIndex, int answerIndex) async {
     questionnaireResponses[questionIndex] = answerIndex;
     final prefs = await SharedPreferences.getInstance();
@@ -104,12 +104,9 @@ class StudentProvider extends ChangeNotifier {
   }
 
   // Clear all saved questionnaire responses
-  Future<void> clearResponses() async {
-    final prefs = await SharedPreferences.getInstance();
-    for (int i = 0; i < 35; i++) {
-      await prefs.remove('question_$i');
-    }
-    questionnaireResponses.clear();
+  void clearResponses() {
+    questionnaireResponses = List.filled(8, null) as Map<int, int>;
+    _responsesLoaded = false;
     notifyListeners();
   }
 }
