@@ -131,21 +131,36 @@ class DashboardScreen extends StatelessWidget {
     IconData icon,
     VoidCallback onTap,
   ) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return SizedBox(
       width: (MediaQuery.of(context).size.width / 2) - 24,
+      height: 150, // fixed height for better alignment
       child: Card(
-        color: Colors.blue.shade100,
+        color: isDark ? Colors.grey[800] : Colors.blue.shade100,
         child: InkWell(
           onTap: onTap,
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 24),
+          child: Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center, // vertical center
+              crossAxisAlignment:
+                  CrossAxisAlignment.center, // horizontal center
               children: [
-                Icon(icon, size: 50, color: Colors.blue.shade700),
+                Icon(
+                  icon,
+                  size: 50,
+                  color: isDark ? Colors.blue.shade300 : Colors.blue.shade700,
+                ),
                 SizedBox(height: 12),
                 Text(
                   title,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: theme.textTheme.bodyLarge?.color,
+                  ),
                 ),
               ],
             ),

@@ -11,7 +11,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => StudentProvider())],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -21,10 +21,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Listen to StudentProvider to get isDarkMode state
+    final provider = Provider.of<StudentProvider>(context);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      //title: 'Student LMS Dashboard',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        brightness: Brightness.light,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blue,
+      ),
+      themeMode: provider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       home: SplashScreen(),
     );
   }

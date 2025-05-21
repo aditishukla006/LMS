@@ -19,14 +19,21 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
   void initState() {
     super.initState();
     final provider = Provider.of<StudentProvider>(context, listen: false);
+    provider.initializeShuffledQuestions();
     provider.loadResponses();
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<StudentProvider>(context);
-    final question = questions[currentQuestion];
-    final selectedOption = provider.questionnaireResponses[currentQuestion];
+
+    // Limit to 8 questions
+    final List<Question> limitedQuestions = questions.take(8).toList();
+    final totalQuestions = limitedQuestions.length;
+
+    final questionIndex = currentQuestion;
+    final question = limitedQuestions[questionIndex];
+    final selectedOption = provider.questionnaireResponses[questionIndex];
 
     return Scaffold(
       appBar: AppBar(
@@ -36,23 +43,42 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            /// PROGRESS TEXT
             Text(
-              "Question ${currentQuestion + 1} / ${questions.length}",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              "Question ${currentQuestion + 1} of $totalQuestions",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+            SizedBox(height: 10),
+
+            /// LINEAR PROGRESS BAR
+            LinearProgressIndicator(
+              value: (currentQuestion + 1) / totalQuestions,
+              backgroundColor: Colors.grey[300],
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+            ),
+
+            SizedBox(height: 30),
+
+            /// QUESTION TITLE
+            Text(
+              question.text,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
             SizedBox(height: 20),
-            Text(question.text, style: TextStyle(fontSize: 18)),
-            SizedBox(height: 20),
 
+            /// OPTIONS
             ...List.generate(question.options.length, (index) {
               return CheckboxListTile(
                 title: Text(question.options[index]),
                 value: selectedOption == index,
                 onChanged: (val) async {
                   if (val == true) {
-                    await provider.saveResponse(currentQuestion, index);
+                    await provider.saveResponse(questionIndex, index);
                   }
+                  setState(() {});
                 },
                 controlAffinity: ListTileControlAffinity.leading,
               );
@@ -60,6 +86,7 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
 
             Spacer(),
 
+            /// NAVIGATION BUTTONS
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -70,15 +97,6 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
                         currentQuestion--;
                       });
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 16,
-                      ),
-                      textStyle: TextStyle(fontSize: 16),
-                    ),
                     child: Text("Previous"),
                   ),
                 ElevatedButton(
@@ -86,7 +104,7 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
                       selectedOption == null
                           ? null
                           : () {
-                            if (currentQuestion < questions.length - 1) {
+                            if (currentQuestion < totalQuestions - 1) {
                               setState(() {
                                 currentQuestion++;
                               });
@@ -99,14 +117,8 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
                               );
                             }
                           },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                    textStyle: TextStyle(fontSize: 16),
-                  ),
                   child: Text(
-                    currentQuestion == questions.length - 1 ? "Submit" : "Next",
+                    currentQuestion == totalQuestions - 1 ? "Submit" : "Next",
                   ),
                 ),
               ],
