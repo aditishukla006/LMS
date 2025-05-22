@@ -21,7 +21,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Listen to StudentProvider to get isDarkMode state
     final provider = Provider.of<StudentProvider>(context);
 
     return MaterialApp(

@@ -1,4 +1,3 @@
-// providers/student_provider.dart
 import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,8 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Assignment {
   final String subject;
   final String title;
-  final String dueDate; // You can change this to DateTime if you want
-  final String status; // "On Time", "Approaching", "Late"
+  final String dueDate;
+  final String status;
 
   Assignment({
     required this.subject,
@@ -22,7 +21,6 @@ class StudentProvider extends ChangeNotifier {
   String studentClass = "10th Grade";
   String profilePicUrl = "https://i.pravatar.cc/150?img=3";
 
-  // Progress data (dummy)
   Map<String, double> assignmentProgress = {
     "Math": 0.75,
     "Science": 0.5,
@@ -39,10 +37,8 @@ class StudentProvider extends ChangeNotifier {
     "Sun": 2,
   };
 
-  // Questionnaire responses saved locally
   Map<int, int> questionnaireResponses = {};
 
-  // Upcoming assignments list
   List<Assignment> upcomingAssignments = [
     Assignment(
       subject: "Math",
@@ -58,7 +54,6 @@ class StudentProvider extends ChangeNotifier {
     ),
   ];
 
-  // Submission status counts
   Map<String, double> submissionStatus = {
     "On Time": 3,
     "Approaching": 1,
@@ -82,7 +77,6 @@ class StudentProvider extends ChangeNotifier {
 
   bool _responsesLoaded = false;
 
-  // Load saved responses
   Future<void> loadResponses() async {
     if (_responsesLoaded) return;
 
@@ -94,8 +88,6 @@ class StudentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Save a response
-
   Future<void> saveResponse(int questionIndex, int answerIndex) async {
     questionnaireResponses[questionIndex] = answerIndex;
     final prefs = await SharedPreferences.getInstance();
@@ -103,7 +95,6 @@ class StudentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Clear all saved questionnaire responses
   void clearResponses() {
     questionnaireResponses = List.filled(8, null) as Map<int, int>;
     _responsesLoaded = false;

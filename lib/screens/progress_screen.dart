@@ -1,5 +1,3 @@
-// screens/progress_screen.dart
-
 // ignore_for_file: unused_import
 
 import 'package:flutter/material.dart';

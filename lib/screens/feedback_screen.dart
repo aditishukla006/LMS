@@ -1,5 +1,3 @@
-// TODO Implement this library.
-// screens/feedback_screen.dart
 import 'package:flutter/material.dart';
 
 class FeedbackScreen extends StatefulWidget {
@@ -21,7 +19,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       return;
     }
 
-    // You can later store this in Firestore or backend
     setState(() {
       _statusMessage = "Thank you for your feedback!";
     });
@@ -39,7 +36,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           children: [
             Text(
               "We'd love to hear your thoughts!",
-              style: TextStyle(fontSize: 18),
+              style: TextStyle(fontSize: 25),
             ),
             SizedBox(height: 16),
             TextField(
@@ -54,7 +51,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             ElevatedButton.icon(
               onPressed: _submitFeedback,
               icon: Icon(Icons.send),
-              label: Text("Submit"),
+              label: Text("Submit", style: TextStyle(fontSize: 25)),
             ),
             SizedBox(height: 16),
             Text(

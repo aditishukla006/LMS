@@ -37,7 +37,6 @@ class DashboardScreen extends StatelessWidget {
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
-            // Profile Info Card
             Card(
               child: ListTile(
                 leading: CircleAvatar(
@@ -51,14 +50,16 @@ class DashboardScreen extends StatelessWidget {
 
             SizedBox(height: 20),
 
-            // Key Features cards
             Wrap(
               spacing: 12,
               runSpacing: 12,
               children: [
-                _buildFeatureCard(context, "Start Learning", Icons.school, () {
-                  // TODO: Navigate to Learning screen
-                }),
+                _buildFeatureCard(
+                  context,
+                  "Start Learning",
+                  Icons.school,
+                  () {},
+                ),
                 _buildFeatureCard(context, "Continue Quiz", Icons.quiz, () {
                   Navigator.push(
                     context,
@@ -98,7 +99,7 @@ class DashboardScreen extends StatelessWidget {
 
             SizedBox(height: 30),
 
-            // Progress Chart - Assignments progress (Pie Chart)
+            // Progress Chart
             _buildAssignmentProgressChart(provider),
 
             SizedBox(height: 30),
@@ -107,12 +108,8 @@ class DashboardScreen extends StatelessWidget {
             _buildWeeklyAssignmentsChart(provider),
 
             SizedBox(height: 30),
-
-            // --- NEW SECTION: Submission Status Pie Chart ---
-            //_buildSubmissionStatusChart(provider.submissionStatus),
             SizedBox(height: 30),
 
-            // --- NEW SECTION: Upcoming Assignments grouped by Subject ---
             _buildUpcomingAssignments(provider.upcomingAssignments),
 
             SizedBox(height: 30),
@@ -136,16 +133,15 @@ class DashboardScreen extends StatelessWidget {
 
     return SizedBox(
       width: (MediaQuery.of(context).size.width / 2) - 24,
-      height: 150, // fixed height for better alignment
+      height: 150,
       child: Card(
         color: isDark ? Colors.grey[800] : Colors.blue.shade100,
         child: InkWell(
           onTap: onTap,
           child: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center, // vertical center
-              crossAxisAlignment:
-                  CrossAxisAlignment.center, // horizontal center
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
                   icon,
@@ -157,7 +153,7 @@ class DashboardScreen extends StatelessWidget {
                   title,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: theme.textTheme.bodyLarge?.color,
                   ),
@@ -193,7 +189,7 @@ class DashboardScreen extends StatelessWidget {
       children: [
         Text(
           "Assignments Progress",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         SizedBox(
           height: 180,
@@ -226,9 +222,7 @@ class DashboardScreen extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.edit),
             title: Text('Edit Profile'),
-            onTap: () {
-              // TODO: Navigate to Edit Profile Screen
-            },
+            onTap: () {},
           ),
           ListTile(
             leading: Icon(Icons.logout),
@@ -245,7 +239,7 @@ class DashboardScreen extends StatelessWidget {
             secondary: Icon(Icons.brightness_6),
             value: provider.isDarkMode,
             onChanged: (val) {
-              provider.toggleTheme(val); // Implement in provider
+              provider.toggleTheme(val);
             },
           ),
         ],
@@ -282,7 +276,7 @@ class DashboardScreen extends StatelessWidget {
       children: [
         Text(
           "Upcoming Assignments This Week",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         SizedBox(
           height: 220,
@@ -312,13 +306,11 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // NEW: Upcoming Assignments grouped by Subject
   Widget _buildUpcomingAssignments(List<Assignment> assignments) {
     if (assignments.isEmpty) {
       return SizedBox();
     }
 
-    // Group by subject
     Map<String, List<Assignment>> grouped = {};
     for (var assignment in assignments) {
       grouped.putIfAbsent(assignment.subject, () => []);
@@ -330,7 +322,7 @@ class DashboardScreen extends StatelessWidget {
       children: [
         Text(
           "Upcoming Assignments",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
         ...grouped.entries.map(
@@ -359,7 +351,6 @@ class DashboardScreen extends StatelessWidget {
 
   Widget _buildStudyPlanCard(BuildContext context, StudentProvider provider) {
     final theme = Theme.of(context);
-    // Add `BuildContext` if needed
     final isDark = theme.brightness == Brightness.dark;
 
     List<String> sessions = [
@@ -378,7 +369,7 @@ class DashboardScreen extends StatelessWidget {
             Text(
               "Daily 45-minute Study Plan",
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: theme.textTheme.bodyLarge?.color,
               ),
@@ -390,7 +381,7 @@ class DashboardScreen extends StatelessWidget {
                 child: Text(
                   s,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 20,
                     color: theme.textTheme.bodyMedium?.color,
                   ),
                 ),

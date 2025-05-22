@@ -24,7 +24,6 @@ class SummaryScreen extends StatelessWidget {
                     final question = questions[index];
                     final selectedAnswer = question.options[selectedIndex];
 
-                    // Extract title (remove text after ":")
                     final questionTitle =
                         question.text.contains(':')
                             ? question.text.split(':').first

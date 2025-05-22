@@ -1,4 +1,3 @@
-// screens/questionnaire_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/student_provider.dart';
@@ -27,7 +26,6 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
   Widget build(BuildContext context) {
     final provider = Provider.of<StudentProvider>(context);
 
-    // Limit to 8 questions
     final List<Question> limitedQuestions = questions.take(8).toList();
     final totalQuestions = limitedQuestions.length;
 
@@ -45,7 +43,6 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// PROGRESS TEXT
             Text(
               "Question ${currentQuestion + 1} of $totalQuestions",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -53,7 +50,6 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
 
             SizedBox(height: 10),
 
-            /// LINEAR PROGRESS BAR
             LinearProgressIndicator(
               value: (currentQuestion + 1) / totalQuestions,
               backgroundColor: Colors.grey[300],
@@ -62,14 +58,12 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
 
             SizedBox(height: 30),
 
-            /// QUESTION TITLE
             Text(
               question.text,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
             SizedBox(height: 20),
 
-            /// OPTIONS
             ...List.generate(question.options.length, (index) {
               return CheckboxListTile(
                 title: Text(question.options[index]),
@@ -90,34 +84,50 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 if (currentQuestion > 0)
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        currentQuestion--;
-                      });
-                    },
-                    child: Text("Previous"),
+                  SizedBox(
+                    width: 150,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          currentQuestion--;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        textStyle: TextStyle(fontSize: 25),
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: Text("Previous"),
+                    ),
                   ),
-                ElevatedButton(
-                  onPressed:
-                      selectedOption == null
-                          ? null
-                          : () {
-                            if (currentQuestion < totalQuestions - 1) {
-                              setState(() {
-                                currentQuestion++;
-                              });
-                            } else {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => SummaryScreen(),
-                                ),
-                              );
-                            }
-                          },
-                  child: Text(
-                    currentQuestion == totalQuestions - 1 ? "Submit" : "Next",
+                SizedBox(
+                  width: 150,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed:
+                        selectedOption == null
+                            ? null
+                            : () {
+                              if (currentQuestion < totalQuestions - 1) {
+                                setState(() {
+                                  currentQuestion++;
+                                });
+                              } else {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => SummaryScreen(),
+                                  ),
+                                );
+                              }
+                            },
+                    style: ElevatedButton.styleFrom(
+                      textStyle: TextStyle(fontSize: 25),
+                      backgroundColor: Colors.green,
+                    ),
+                    child: Text(
+                      currentQuestion == totalQuestions - 1 ? "Submit" : "Next",
+                    ),
                   ),
                 ),
               ],
